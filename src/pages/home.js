@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid'
 import axios from 'axios'
+import Tell from '../components/Tell'
 
 export class home extends Component {
     state = {
@@ -19,7 +20,7 @@ export class home extends Component {
     render() {
         let recentTellsMarkup = this.state.tells ? (
             this.state.tells.map(tell => {
-                return <p>{tell.body}</p>
+                return <Tell tell={tell} />
             })
         ) : <p>Loading...</p>
         return (
