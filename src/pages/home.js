@@ -20,11 +20,11 @@ export class home extends Component {
     render() {
         let recentTellsMarkup = this.state.tells ? (
             this.state.tells.map(tell => {
-                return <Tell tell={tell} />
+                return <Tell key={tell.tellId} tell={tell} />
             })
         ) : <p>Loading...</p>
         return (
-            <Grid container spacing={16} >
+            <Grid container spacing={10} >
                  <Grid item sm={8} xs={12}>
                      {recentTellsMarkup}
                  </Grid>
