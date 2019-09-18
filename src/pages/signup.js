@@ -12,6 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+//Redux
+import { connect } from 'react-redux';
+import { signupUser } from '../redux/actions/userActions';
 
 const styles = {
   form: {
@@ -64,26 +67,20 @@ export class signup extends Component {
       userName: this.state.userName,
       confirmPassword: this.state.confirmPassword
     };
-    axios
-      .post('/signup', newUserData)
-      .then(res => {
-        this.setState({
-          loading: false
-        });
-        localStorage.setItem('FBIdToken', `Bearer ${res.data.idToken}`);
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        this.setState({
-          errors: err.response.data,
-          loading: false
-        });
-      });
+    this.props.signupUser(newUserData, this.props.history);
   };
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.UI.errors) {
+      this.setState({ errors: newProps.UI.errors });
+    }
+  }
   render() {
-    const { classes } = this.props;
-    const { errors, loading } = this.state;
+    const {
+      classes,
+      UI: { loading }
+    } = this.props;
+    const { errors } = this.state;
     return (
       <Grid container className={classes.form}>
         <Grid item sm></Grid>
@@ -167,7 +164,18 @@ export class signup extends Component {
 }
 
 signup.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
+  logoutUser: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(signup);
+const mapStateToProps = state => ({
+  user: state.user,
+  UI: state.ui
+});
+
+export default connect(
+  mapStateToProps,
+  { signupUser }
+)(withStyles(styles)(signup));
