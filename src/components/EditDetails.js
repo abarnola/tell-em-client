@@ -1,27 +1,34 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import MyButton from '../util/MyButton';
+//Material-UI
 import withStyles from '@material-ui/core/styles/withStyles';
-// Redux stuff
-import { connect } from 'react-redux';
-import { editUserDetails } from '../redux/actions/userActions';
-// MUI Stuff
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-// Icons
-import EditIcon from '@material-ui/icons/Edit';
 
-const styles = (theme) => ({
-  ...theme,
+//Redux
+import { connect } from 'react-redux';
+import { editUserDetails } from '../redux/actions/userActions';
+import { Tooltip } from '@material-ui/core';
+
+//Icons
+import EditIcon from '@material-ui/icons/Edit';
+import { classes } from 'istanbul-lib-coverage';
+
+const styles = {
+  textField: {
+    margin: 20
+  },
   button: {
     float: 'right'
   }
-});
+};
 
 class EditDetails extends Component {
   state = {
@@ -30,29 +37,25 @@ class EditDetails extends Component {
     location: '',
     open: false
   };
-  mapUserDetailsToState = (credentials) => {
+
+  mapDetailsToState = credentials => {
     this.setState({
       bio: credentials.bio ? credentials.bio : '',
-      website: credentials.website ? credentials.website : '',
-      location: credentials.location ? credentials.location : ''
+      location: credentials.location ? credentials.location : '',
+      website: credentials.website ? credentials.website : ''
+    });
+  };
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
     });
   };
   handleOpen = () => {
     this.setState({ open: true });
-    this.mapUserDetailsToState(this.props.credentials);
+    this.mapDetailsToState(this.props.credentials);
   };
   handleClose = () => {
     this.setState({ open: false });
-  };
-  componentDidMount() {
-    const { credentials } = this.props;
-    this.mapUserDetailsToState(credentials);
-  }
-
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
   };
   handleSubmit = () => {
     const userDetails = {
@@ -63,63 +66,68 @@ class EditDetails extends Component {
     this.props.editUserDetails(userDetails);
     this.handleClose();
   };
+  componentDidMount() {
+    const { credentials } = this.props;
+    this.mapDetailsToState(credentials);
+  }
   render() {
     const { classes } = this.props;
     return (
       <Fragment>
-        <Tooltip title="Edit details" placement="top">
-          <IconButton onClick={this.handleOpen} className={classes.button}>
-            <EditIcon color="primary" />
-          </IconButton>
-        </Tooltip>
+        <MyButton
+          tip='Edit User Details'
+          onClick={this.handleOpen}
+          btnClassName={classes.button}
+        >
+          <EditIcon color='primary' />
+        </MyButton>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           fullWidth
-          maxWidth="sm"
+          maxWidth='sm'
         >
           <DialogTitle>Edit your details</DialogTitle>
           <DialogContent>
-            <form>
+            <form noValidate>
               <TextField
-                name="bio"
-                tpye="text"
-                label="Bio"
+                name='bio'
+                type='text'
+                label='Bio'
                 multiline
-                rows="3"
-                placeholder="A short bio about yourself"
-                className={classes.textField}
+                placeholder='A short description of yourself'
+                className={classes.TextField}
                 value={this.state.bio}
                 onChange={this.handleChange}
                 fullWidth
               />
               <TextField
-                name="website"
-                tpye="text"
-                label="Website"
-                placeholder="Your personal/professinal website"
-                className={classes.textField}
-                value={this.state.website}
+                name='location'
+                type='text'
+                label='Location'
+                placeholder='e.g. Caracas, Venezuela'
+                className={classes.TextField}
+                value={this.state.location}
                 onChange={this.handleChange}
                 fullWidth
               />
               <TextField
-                name="location"
-                tpye="text"
-                label="Location"
-                placeholder="Where you live"
-                className={classes.textField}
-                value={this.state.location}
+                name='website'
+                type='text'
+                label='Website'
+                placeholder='Your personal/professional website'
+                className={classes.TextField}
+                value={this.state.website}
                 onChange={this.handleChange}
                 fullWidth
               />
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} color='primary'>
               Cancel
             </Button>
-            <Button onClick={this.handleSubmit} color="primary">
+            <Button onClick={this.handleSubmit} color='secondary'>
               Save
             </Button>
           </DialogActions>
@@ -134,7 +142,7 @@ EditDetails.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   credentials: state.user.credentials
 });
 

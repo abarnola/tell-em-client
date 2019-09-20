@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import Tell from '../components/Tell';
+import Profile from '../components/Profile';
 import jwtDecode from 'jwt-decode';
-
+import PropTypes from 'prop-types';
+//Redux
+import { getTells } from '../redux/actions/dataActions';
+import { connect } from 'react-redux';
 const token = localStorage.FBIdToken;
 if (token) {
   const decodedToken = jwtDecode(token);
@@ -13,23 +17,14 @@ if (token) {
 }
 
 export class home extends Component {
-  state = {
-    tells: null
-  };
   componentDidMount() {
-    axios
-      .get('/tells')
-      .then(res => {
-        this.setState({
-          tells: res.data
-        });
-      })
-      .catch(err => console.log(err));
+    this.props.getTells();
   }
 
   render() {
-    let recentTellsMarkup = this.state.tells ? (
-      this.state.tells.map(tell => {
+    const { tells, loading } = this.props.data;
+    let recentTellsMarkup = !loading ? (
+      tells.map(tell => {
         return <Tell key={tell.tellId} tell={tell} />;
       })
     ) : (
@@ -41,11 +36,19 @@ export class home extends Component {
           {recentTellsMarkup}
         </Grid>
         <Grid item sm={4} xs={12}>
-          <p>Profile info here</p>
+          <Profile />
         </Grid>
       </Grid>
     );
   }
 }
-
-export default home;
+home.propTypes = {
+  getTells: PropTypes.func.isRequired
+};
+const mapStateToProps = state => ({
+  data: state.data
+});
+export default connect(
+  mapStateToProps,
+  { getTells }
+)(home);
