@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MyButton from '../util/MyButton';
+import DeleteTell from './DeleteTell';
 //DayJS
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -66,7 +67,10 @@ export class Tell extends Component {
         likeCount,
         commentCount
       },
-      user: { authenticated }
+      user: {
+        authenticated,
+        credentials: { user }
+      }
     } = this.props;
     const likeButton = !authenticated ? (
       <MyButton tip='Like'>
@@ -83,6 +87,10 @@ export class Tell extends Component {
         <FavoriteBorder />
       </MyButton>
     );
+    const deleteButton =
+      authenticated && userName === user ? (
+        <DeleteTell tellId={tellId} />
+      ) : null;
     return (
       <Card className={classes.card}>
         <CardMedia
@@ -99,6 +107,7 @@ export class Tell extends Component {
           >
             {userName}
           </Typography>
+          {deleteButton}
           <Typography variant='body2' color='textSecondary'>
             {dayjs(dateCreated).fromNow()}
           </Typography>

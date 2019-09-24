@@ -1,4 +1,10 @@
-import { SET_TELLS, LIKE_TELL, UNLIKE_TELL, LOADING_DATA } from '../types';
+import {
+  SET_TELLS,
+  LIKE_TELL,
+  UNLIKE_TELL,
+  LOADING_DATA,
+  DELETE_TELL
+} from '../types';
 
 const initialState = {
   tells: [],
@@ -22,9 +28,15 @@ export default function(state = initialState, action) {
     case LIKE_TELL:
     case UNLIKE_TELL:
       let index = state.tells.findIndex(
-        tell => tell.tellId !== action.payload.tellId
+        tell => tell.tellId === action.payload.tellId
       );
       state.tells[index] = action.payload;
+      return {
+        ...state
+      };
+    case DELETE_TELL:
+      index = state.tells.findIndex(tell => tell.tellId === action.payload);
+      state.tells.splice(index, 1);
       return {
         ...state
       };

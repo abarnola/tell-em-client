@@ -1,4 +1,10 @@
-import { SET_TELLS, LOADING_DATA, LIKE_TELL, UNLIKE_TELL } from '../types';
+import {
+  SET_TELLS,
+  LOADING_DATA,
+  LIKE_TELL,
+  UNLIKE_TELL,
+  DELETE_TELL
+} from '../types';
 import axios from 'axios';
 
 //Get all Tells
@@ -44,4 +50,14 @@ export const unlikeTell = tellId => dispatch => {
       });
     })
     .catch(err => console.log(err));
+};
+
+// Delete a Tell
+export const deleteTell = tellId => dispatch => {
+  axios.delete(`/tell/${tellId}`).then(() => {
+    dispatch({
+      type: DELETE_TELL,
+      payload: tellId
+    });
+  });
 };

@@ -49,7 +49,7 @@ export default function(state = initialState, action) {
     case UNLIKE_TELL:
       return {
         ...state,
-        likes: state.likes.filter(like => like.tellId === action.payload.tellId)
+        likes: state.likes.filter(like => like.tellId !== action.payload.tellId)
       };
     default:
       return state;
