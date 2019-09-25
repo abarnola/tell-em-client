@@ -21,9 +21,7 @@ export class Navbar extends Component {
         <Toolbar className='nav-container'>
           {authenticated ? (
             <Fragment>
-              <MyButton tip='Post a Tell!'>
-                <PostTell />
-              </MyButton>
+              <PostTell />
               <Link to='/'>
                 <MyButton tip='Home'>
                   <HomeIcon />

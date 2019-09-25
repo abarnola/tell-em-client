@@ -16,18 +16,21 @@ import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from '@material-ui/icons/Close'
 //Redux
 import { connect } from 'react-redux'
-import { postTell } from '../redux/actions/dataActions'
+import { postTell, clearErrors } from '../redux/actions/dataActions'
+import { thisExpression } from '@babel/types'
 const styles = {
   submitButton: {
-    position: 'relative'
+    position: 'relative',
+    float: 'right',
+    marginTop: '10px'
   },
   progressSpinner: {
     position: 'absolute'
   },
   closeButton: {
     position: 'absolute',
-    left: '90%',
-    top: '10%'
+    left: '91%',
+    top: '6%'
   }
 }
 export class PostTell extends Component {
@@ -41,6 +44,7 @@ export class PostTell extends Component {
   }
   handleClose = () => {
     this.setState({ open: false })
+    this.props.clearErrors()
   }
   handleChange = event => {
     this.setState({
@@ -96,6 +100,7 @@ export class PostTell extends Component {
                 placeholder='Tell your friends!'
                 error={errors.body ? true : false}
                 helperText={errors.body}
+                className={classes.textField}
                 onChange={this.handleChange}
               />
               <Button
@@ -127,10 +132,11 @@ const mapStateToProps = state => ({
 
 PostTell.propTypes = {
   postTell: PropTypes.func.isRequired,
-  UI: PropTypes.object.isRequired
+  UI: PropTypes.object.isRequired,
+  clearErrors: PropTypes.func.isRequired
 }
 
 export default connect(
   mapStateToProps,
-  { postTell }
+  { postTell, clearErrors }
 )(withStyles(styles)(PostTell))
