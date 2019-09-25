@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import MyButton from '../util/MyButton';
-import DeleteTell from './DeleteTell';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import MyButton from '../util/MyButton'
+import DeleteTell from './DeleteTell'
 //DayJS
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 //Material-UI
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import { Typography } from '@material-ui/core';
-import withStyles from '@material-ui/core/styles/withStyles';
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import { Typography } from '@material-ui/core'
+import withStyles from '@material-ui/core/styles/withStyles'
 
 //Icons
-import ChatIcon from '@material-ui/icons/Chat';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import ChatIcon from '@material-ui/icons/Chat'
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
+import FavoriteIcon from '@material-ui/icons/Favorite'
 //Redux
-import { connect } from 'react-redux';
-import { likeTell, unlikeTell } from '../redux/actions/dataActions';
+import { connect } from 'react-redux'
+import { likeTell, unlikeTell } from '../redux/actions/dataActions'
 
 const styles = {
   card: {
@@ -34,26 +34,25 @@ const styles = {
   content: {
     padding: 25
   }
-};
+}
 
 export class Tell extends Component {
   likedTell = () => {
-    const test = this.props.user.likes.find(like => {
-      console.log(this.props.user.likes);
+    const res = this.props.user.likes.find(like => {
       if (like) {
-        return like.tellId === this.props.tell.tellId;
-      } else return false;
-    });
-    return test;
-  };
+        return like.tellId === this.props.tell.tellId
+      } else return false
+    })
+    return res
+  }
   likeTell = () => {
-    this.props.likeTell(this.props.tell.tellId);
-  };
+    this.props.likeTell(this.props.tell.tellId)
+  }
   unlikeTell = () => {
-    this.props.unlikeTell(this.props.tell.tellId);
-  };
+    this.props.unlikeTell(this.props.tell.tellId)
+  }
   render() {
-    dayjs.extend(relativeTime);
+    dayjs.extend(relativeTime)
 
     //Same as const classes = this.props.classes
     const {
@@ -67,11 +66,8 @@ export class Tell extends Component {
         likeCount,
         commentCount
       },
-      user: {
-        authenticated,
-        credentials: { user }
-      }
-    } = this.props;
+      user: { authenticated, credentials }
+    } = this.props
     const likeButton = !authenticated ? (
       <MyButton tip='Like'>
         <Link to='/login'>
@@ -86,11 +82,12 @@ export class Tell extends Component {
       <MyButton tip='Like' onClick={this.likeTell}>
         <FavoriteBorder />
       </MyButton>
-    );
+    )
     const deleteButton =
-      authenticated && userName === user ? (
+      authenticated && userName === credentials.userName ? (
         <DeleteTell tellId={tellId} />
-      ) : null;
+      ) : null
+    console.log('user: ' + credentials.userName)
     return (
       <Card className={classes.card}>
         <CardMedia
@@ -119,7 +116,7 @@ export class Tell extends Component {
           </MyButton>
         </CardContent>
       </Card>
-    );
+    )
   }
 }
 
@@ -129,15 +126,15 @@ Tell.propTypes = {
   user: PropTypes.object.isRequired,
   tell: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired
-};
+}
 const mapStateToProps = state => ({
   user: state.user
-});
+})
 const mapActionsToProps = {
   likeTell,
   unlikeTell
-};
+}
 export default connect(
   mapStateToProps,
   mapActionsToProps
-)(withStyles(styles)(Tell));
+)(withStyles(styles)(Tell))
