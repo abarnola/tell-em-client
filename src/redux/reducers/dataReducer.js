@@ -4,7 +4,9 @@ import {
   UNLIKE_TELL,
   LOADING_DATA,
   DELETE_TELL,
-  POST_TELL
+  SET_TELL,
+  POST_TELL,
+  SUBMIT_COMMENT
 } from '../types'
 
 const initialState = {
@@ -27,6 +29,11 @@ export default function(state = initialState, action) {
         tells: action.payload,
         loading: false
       }
+    case SET_TELL:
+      return {
+        ...state,
+        tell: action.payload
+      }
     case POST_TELL:
       return {
         ...state,
@@ -38,6 +45,9 @@ export default function(state = initialState, action) {
         tell => tell.tellId === action.payload.tellId
       )
       state.tells[index] = action.payload
+      if (state.tell.tellId === action.payload.tellId) {
+        state.tell = action.payload
+      }
       return {
         ...state
       }
@@ -46,6 +56,14 @@ export default function(state = initialState, action) {
       state.tells.splice(index, 1)
       return {
         ...state
+      }
+    case SUBMIT_COMMENT:
+      return {
+        ...state,
+        scream: {
+          ...state.scream,
+          comments: [action.payload, ...state.scream.comments]
+        }
       }
     default:
       return state

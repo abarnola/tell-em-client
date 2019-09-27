@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import MyButton from '../util/MyButton'
 import DeleteTell from './DeleteTell'
+import TellDialog from './TellDialog'
+import LikeButton from './LikeButton'
 //DayJS
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -16,15 +18,13 @@ import withStyles from '@material-ui/core/styles/withStyles'
 
 //Icons
 import ChatIcon from '@material-ui/icons/Chat'
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
-import FavoriteIcon from '@material-ui/icons/Favorite'
 //Redux
 import { connect } from 'react-redux'
-import { likeTell, unlikeTell } from '../redux/actions/dataActions'
 
 const styles = {
   card: {
     display: 'flex',
+    position: 'relative',
     marginBottom: 20
   },
   image: {
@@ -37,20 +37,6 @@ const styles = {
 }
 
 export class Tell extends Component {
-  likedTell = () => {
-    const res = this.props.user.likes.find(like => {
-      if (like) {
-        return like.tellId === this.props.tell.tellId
-      } else return false
-    })
-    return res
-  }
-  likeTell = () => {
-    this.props.likeTell(this.props.tell.tellId)
-  }
-  unlikeTell = () => {
-    this.props.unlikeTell(this.props.tell.tellId)
-  }
   render() {
     dayjs.extend(relativeTime)
 
@@ -68,26 +54,11 @@ export class Tell extends Component {
       },
       user: { authenticated, credentials }
     } = this.props
-    const likeButton = !authenticated ? (
-      <MyButton tip='Like'>
-        <Link to='/login'>
-          <FavoriteBorder />
-        </Link>
-      </MyButton>
-    ) : this.likedTell() ? (
-      <MyButton tip='Unlike' onClick={this.unlikeTell}>
-        <FavoriteIcon />
-      </MyButton>
-    ) : (
-      <MyButton tip='Like' onClick={this.likeTell}>
-        <FavoriteBorder />
-      </MyButton>
-    )
+
     const deleteButton =
       authenticated && userName === credentials.userName ? (
         <DeleteTell tellId={tellId} />
       ) : null
-    console.log('user: ' + credentials.userName)
     return (
       <Card className={classes.card}>
         <CardMedia
@@ -109,11 +80,12 @@ export class Tell extends Component {
             {dayjs(dateCreated).fromNow()}
           </Typography>
           <Typography variant='body1'>{body}</Typography>
-          {likeButton}
+          <LikeButton tellId={tellId} />
           <span>{likeCount} likes</span>
           <MyButton tip='comments'>
             <ChatIcon color='primary' />
           </MyButton>
+          <TellDialog tellId={tellId} userName={userName} />
         </CardContent>
       </Card>
     )
@@ -121,8 +93,6 @@ export class Tell extends Component {
 }
 
 Tell.propTypes = {
-  likeTell: PropTypes.func.isRequired,
-  unlikeTell: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   tell: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired
@@ -130,11 +100,8 @@ Tell.propTypes = {
 const mapStateToProps = state => ({
   user: state.user
 })
-const mapActionsToProps = {
-  likeTell,
-  unlikeTell
-}
+
 export default connect(
   mapStateToProps,
-  mapActionsToProps
+  null
 )(withStyles(styles)(Tell))

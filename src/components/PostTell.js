@@ -17,7 +17,6 @@ import CloseIcon from '@material-ui/icons/Close'
 //Redux
 import { connect } from 'react-redux'
 import { postTell, clearErrors } from '../redux/actions/dataActions'
-import { thisExpression } from '@babel/types'
 const styles = {
   submitButton: {
     position: 'relative',

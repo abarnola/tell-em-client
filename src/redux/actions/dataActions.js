@@ -6,8 +6,11 @@ import {
   DELETE_TELL,
   POST_TELL,
   LOADING_UI,
+  STOP_LOADING_UI,
   SET_ERRORS,
-  CLEAR_ERRORS
+  CLEAR_ERRORS,
+  SET_TELL,
+  SUBMIT_COMMENT
 } from '../types'
 import axios from 'axios'
 
@@ -28,6 +31,17 @@ export const getTells = () => dispatch => {
         payload: []
       })
     })
+}
+
+export const getTell = tellId => dispatch => {
+  dispatch({ type: LOADING_UI })
+  axios
+    .get(`/tell/${tellId}`)
+    .then(res => {
+      dispatch({ type: SET_TELL, payload: res.data })
+      dispatch({ type: STOP_LOADING_UI })
+    })
+    .catch(err => console.error(err))
 }
 
 //Post a Tell
@@ -77,7 +91,22 @@ export const unlikeTell = tellId => dispatch => {
     })
     .catch(err => console.log(err))
 }
-
+//Submit a Comment
+export const submitComment = (tellId, commentData) => dispatch => {
+  axios
+    .post(`/tell/${tellId}/comment`, commentData)
+    .then(res => {
+      dispatch({
+        type: SUBMIT_COMMENT,
+        payload: res.data
+      })
+      dispatch(clearErrors())
+    })
+    .catch(err => {
+      //dispatch({ type: SET_ERRORS, payload: err.response.data })
+      console.log('error: ' + err)
+    })
+}
 // Delete a Tell
 export const deleteTell = tellId => dispatch => {
   axios.get(`/tell/${tellId}`).then(() => {
@@ -86,6 +115,21 @@ export const deleteTell = tellId => dispatch => {
       payload: tellId
     })
   })
+}
+
+export const getUserDetails = userName => dispatch => {
+  dispatch({ type: LOADING_DATA })
+  axios
+    .get(`/user/${userName}`)
+    .then(res => {
+      dispatch({
+        type: SET_TELLS,
+        payload: res.data.tells
+      })
+    })
+    .catch(() => {
+      dispatch({ type: SET_TELLS, payload: null })
+    })
 }
 
 export const clearErrors = () => dispatch => {
