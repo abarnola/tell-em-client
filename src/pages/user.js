@@ -12,10 +12,15 @@ import { getUserDetails } from '../redux/actions/dataActions'
 
 export class user extends Component {
   state = {
-    profile: null
+    profile: null,
+    tellIdParameter: null
   }
   componentDidMount() {
     const userName = this.props.match.params.userName
+    const tellId = this.props.match.params.tellId
+    console.log('componentDidMountinngggg')
+    if (tellId) this.setState({ tellIdParameter: tellId })
+
     this.props.getUserDetails(userName)
     axios
       .get(`/user/${userName}`)
@@ -28,10 +33,17 @@ export class user extends Component {
   }
   render() {
     const { tells, loading } = this.props.data
+    const { tellIdParameter } = this.state
     const tellsMarkup = loading ? (
       <p>loading data...</p>
     ) : tells === null ? (
       <p>User doesn't have any tells!</p>
+    ) : tellIdParameter ? (
+      tells.map(tell => {
+        if (tell.tellId !== tellIdParameter)
+          return <Tell key={tell.tellId} tell={tell} />
+        else return <Tell key={tell.tellId} tell={tell} openDialog />
+      })
     ) : (
       tells.map(tell => <Tell key={tell.tellId} tell={tell} />)
     )

@@ -57,15 +57,32 @@ const styles = {
 }
 export class TellDialog extends Component {
   state = {
-    open: false
+    open: false,
+    oldUrl: '',
+    newUrl: ''
   }
   handleOpen = () => {
-    this.setState({ open: true })
+    let oldUrl = window.location.pathname
+
+    const { userName, tellId } = this.props
+    const newUrl = `/users/${userName}/tell/${tellId}`
+
+    if (oldUrl === newUrl) oldUrl = `/users/${userName}`
+
+    window.history.pushState(null, null, newUrl)
+
+    this.setState({ open: true, oldUrl, newUrl })
     this.props.getTell(this.props.tellId)
   }
   handleClose = () => {
+    window.history.pushState(null, null, this.state.oldUrl)
     this.setState({ open: false })
     this.props.clearErrors()
+  }
+  componentDidMount() {
+    if (this.props.openDialog) {
+      this.handleOpen()
+    }
   }
   render() {
     const {

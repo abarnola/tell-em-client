@@ -109,7 +109,7 @@ export const submitComment = (tellId, commentData) => dispatch => {
 }
 // Delete a Tell
 export const deleteTell = tellId => dispatch => {
-  axios.get(`/tell/${tellId}`).then(() => {
+  axios.get(`/tell/${tellId}/delete`).then(() => {
     dispatch({
       type: DELETE_TELL,
       payload: tellId

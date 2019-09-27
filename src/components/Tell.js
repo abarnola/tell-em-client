@@ -85,7 +85,11 @@ export class Tell extends Component {
           <MyButton tip='comments'>
             <ChatIcon color='primary' />
           </MyButton>
-          <TellDialog tellId={tellId} userName={userName} />
+          <TellDialog
+            tellId={tellId}
+            userName={userName}
+            openDialog={this.props.openDialog}
+          />
         </CardContent>
       </Card>
     )
@@ -95,7 +99,8 @@ export class Tell extends Component {
 Tell.propTypes = {
   user: PropTypes.object.isRequired,
   tell: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  openDialog: PropTypes.bool
 }
 const mapStateToProps = state => ({
   user: state.user

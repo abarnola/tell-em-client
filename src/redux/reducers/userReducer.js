@@ -4,8 +4,9 @@ import {
   SET_UNAUTHENTICATED,
   LOADING_USER,
   LIKE_TELL,
-  UNLIKE_TELL
-} from '../types';
+  UNLIKE_TELL,
+  MARK_NOTIFICATIONS_READ
+} from '../types'
 
 const initialState = {
   authenticated: false,
@@ -13,7 +14,7 @@ const initialState = {
   credentials: {},
   likes: [],
   notifications: []
-};
+}
 
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -21,20 +22,20 @@ export default function(state = initialState, action) {
       return {
         ...state,
         authenticated: true
-      };
+      }
     case SET_UNAUTHENTICATED:
-      return initialState;
+      return initialState
     case SET_USER:
       return {
         authenticated: true,
         loading: false,
         ...action.payload
-      };
+      }
     case LOADING_USER:
       return {
         ...state,
         loading: true
-      };
+      }
     case LIKE_TELL:
       return {
         ...state,
@@ -45,13 +46,15 @@ export default function(state = initialState, action) {
             tellId: action.payload.tellId
           }
         ]
-      };
+      }
     case UNLIKE_TELL:
       return {
         ...state,
         likes: state.likes.filter(like => like.tellId !== action.payload.tellId)
-      };
+      }
+    case MARK_NOTIFICATIONS_READ:
+
     default:
-      return state;
+      return state
   }
 }
